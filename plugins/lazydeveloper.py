@@ -103,7 +103,7 @@ async def lazydeveloper_handle_url(client, message, url, user_id):
         await client.send_chat_action(message.chat.id, enums.ChatAction.TYPING)
         await ok.edit(f"Sure sir... 🚀!")
         # Create a task for the handler function
-        lazytask = asyncio.create_task(download_from_terabox(client, message, url, platform))
+        lazytask = asyncio.create_task(download_from_terabox(client, message, url, "terabox"))
         user_tasks[user_id].append(lazytask)
         lazytask.add_done_callback(lambda t: asyncio.create_task(task_done_callback(client, message, user_id, t)))
         await ok.delete()
