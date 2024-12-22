@@ -8,7 +8,7 @@ import logging
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from lazydeveloper.lazyprogress import progress_for_pyrogram
 from plugins.utitles import Mdata01
-
+from lazydeveloper.thumbnal import extract_thumbnail
 # aria2 = aria2p.API(
 #     aria2p.Client(
 #         host="http://localhost",
@@ -142,7 +142,7 @@ async def download_from_terabox(client, message, url, platform):
                     for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
                         file.write(chunk)
                         current_size += len(chunk)
-                        await progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
+                        await progress_for_pyrogram("Bda mst content h 😂 !\n\nJaldi jaldi se apne server pr upload kr leta hu, uske baad tumhe de dunga!\n\nDont wrry, Just Uploading to my server to avoid network break", current_size, file_size, progress_message2, start_time)
                 # return download_link, video_title
 
                 # Step 3: Upload the video to Telegram
@@ -163,6 +163,21 @@ async def download_from_terabox(client, message, url, platform):
                 #     caption=f"Here is your video: {video_title}",  # Video caption
                 #     parse_mode=enums.ParseMode.HTML  # Optional: Parse mode for HTML
                 # )
+                # 
+                # Define paths
+                try:
+                    thumbnail_path = os.path.join(destination_folder, "thumbnail.jpg")
+
+                    # Extract or generate thumbnail
+                    thumbnail_result = extract_thumbnail(video_filename, thumbnail_path)
+
+                    # Send video with thumbnail (if available)
+                    thumb_option = thumbnail_result if thumbnail_result and os.path.exists(thumbnail_result) else None
+                except Exception as e:
+                    print(e)
+                    pass
+                if thumb_option is not None:
+                    thumb = thumb_option
                 width, height, duration = await Mdata01(video_filename)
                 succ = await client.send_video(
                     message.chat.id,
@@ -170,6 +185,7 @@ async def download_from_terabox(client, message, url, platform):
                     caption=caption,
                     duration=duration,
                     width=width,
+                    thumb=thumb,
                     height=height,
                     parse_mode=enums.ParseMode.HTML,
                     supports_streaming=True,
@@ -183,6 +199,7 @@ async def download_from_terabox(client, message, url, platform):
 
                 # -----------------------------------
                 # -----------------------------------
+                await xlx.delete()
                 sticker_message = await message.reply_sticker("CAACAgIAAxkBAAEZdwRmJhCNfFRnXwR_lVKU1L9F3qzbtAAC4gUAAj-VzApzZV-v3phk4DQE")
                 os.remove(video_filename)
                 await asyncio.sleep(5)
