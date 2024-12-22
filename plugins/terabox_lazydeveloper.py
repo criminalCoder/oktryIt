@@ -49,6 +49,27 @@ def extract_short_url(url):
         return path_parts[1]
     return None
 
+async def new_progress_for_pyrogram(current, total, message, start_time):
+    now = time.time()
+    diff = now - start_time
+    if diff >= 1:  # Update every second
+        percentage = (current / total) * 100
+        speed = current / diff  # Bytes per second
+        elapsed_time = time.strftime("%H:%M:%S", time.gmtime(diff))
+        estimated_total_time = time.strftime("%H:%M:%S", time.gmtime(total / speed)) if speed > 0 else "--:--:--"
+        progress_text = (
+            f"<b>🍟Saving your file to the server...</b>\n"
+            f"<code>{current / 1024:.2f} KB / {total / 1024:.2f} KB</code>\n"
+            f"<i>Progress:</i> {percentage:.2f}%\n"
+            f"<i>Speed:</i> {speed / 1024:.2f} KB/s\n"
+            f"<i>Elapsed:</i> {elapsed_time}\n"
+            f"<i>ETA:</i> {estimated_total_time}"
+        )
+        try:
+            await message.edit_text(progress_text)
+        except Exception as e:
+            print(f"Progress update error: {e}")
+
 async def download_from_terabox(client, message, url, platform):
     await client.send_chat_action(message.chat.id, enums.ChatAction.TYPING)
     progress_message2 = await message.reply("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ\nᴀɴᴀʟʏsɪɴɢ yᴏᴜʀ ᴜʀʟ...</i>")
@@ -142,7 +163,7 @@ async def download_from_terabox(client, message, url, platform):
                     for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
                         file.write(chunk)
                         current_size += len(chunk)
-                        await progress_for_pyrogram("Bda mst content h 😂 !\n\nJaldi jaldi se apne server pr upload kr leta hu, uske baad tumhe de dunga!\n\nDont wrry, Just Uploading to my server to avoid network break", current_size, file_size, progress_message2, start_time)
+                        await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 # return download_link, video_title
 
                 # Step 3: Upload the video to Telegram
