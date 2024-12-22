@@ -9,6 +9,8 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from lazydeveloper.lazyprogress import progress_for_pyrogram
 from plugins.utitles import Mdata01
 from lazydeveloper.thumbnal import extract_thumbnail
+from lazydeveloper.ffmpeg import take_screen_shot, fix_thumb
+import random
 # aria2 = aria2p.API(
 #     aria2p.Client(
 #         host="http://localhost",
@@ -161,9 +163,9 @@ async def download_from_terabox(client, message, url, platform):
                 response = requests.get(download_link, stream=True)
                 response.raise_for_status()
                 video_filename = os.path.join(destination_folder, video_title)  # Define the path to save the file
-                file_size = int(response.headers.get('content-length', 0))
-                current_size = 0
-                start_time = time.time()
+                # file_size = int(response.headers.get('content-length', 0))
+                # current_size = 0
+                # start_time = time.time()
                 # metadata = extractMetadata(createParser(video_filename))
                 # if metadata is not None:
                 #     if metadata.has("duration"):
@@ -198,19 +200,26 @@ async def download_from_terabox(client, message, url, platform):
                 # )
                 # 
                 # Define paths
+                # thumb_option = None
+                # try:
+                #     thumbnail_path = os.path.join(destination_folder, "thumbnail.jpg")
+
+                #     # Extract or generate thumbnail
+                #     thumbnail_result = extract_thumbnail(video_filename, thumbnail_path)
+
+                #     # Send video with thumbnail (if available)
+                #     thumb_option = thumbnail_result if thumbnail_result and os.path.exists(thumbnail_result) else None
+                # except Exception as e:
+                #     print(e)
+                #     pass
+                # if thumb_option is not None:
+                #     thumb = thumb_option
                 try:
-                    thumbnail_path = os.path.join(destination_folder, "thumbnail.jpg")
-
-                    # Extract or generate thumbnail
-                    thumbnail_result = extract_thumbnail(video_filename, thumbnail_path)
-
-                    # Send video with thumbnail (if available)
-                    thumb_option = thumbnail_result if thumbnail_result and os.path.exists(thumbnail_result) else None
+                    ph_path_ = await take_screen_shot(destination_folder, os.path.dirname(os.path.abspath(destination_folder)), random.randint(0, duration - 1))
+                    width, height, ph_path = await fix_thumb(ph_path_)
                 except Exception as e:
+                    ph_path = None
                     print(e)
-                    pass
-                if thumb_option is not None:
-                    thumb = thumb_option
                 width, height, duration = await Mdata01(video_filename)
                 succ = await client.send_video(
                     message.chat.id,
@@ -218,7 +227,7 @@ async def download_from_terabox(client, message, url, platform):
                     caption=caption,
                     duration=duration,
                     width=width,
-                    thumb=thumb,
+                    thumb=ph_path,
                     height=height,
                     parse_mode=enums.ParseMode.HTML,
                     supports_streaming=True,
