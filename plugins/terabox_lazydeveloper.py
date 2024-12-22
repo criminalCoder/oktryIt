@@ -137,10 +137,10 @@ async def download_from_terabox(client, message, url, platform):
                 #======================================
                 bot_username = client.username if client.username else "👩‍💻Powered By LazyDeveloper"
                 caption_lazy = f"ᴡɪᴛʜ ❤ @{bot_username}"
-                title = video_title if video_title else "===========🍟==========="
+                caption = video_title if video_title else "===========🍟==========="
                 while len(caption) + len(caption_lazy) > 1024:
                     caption = caption[:-1]  # Trim caption if it's too long
-                caption = f'<b><a href="{url}">{title}</a>\n\n<blockquote>{caption_lazy}</blockquote></b>'
+                caption = f'<b><a href="{url}">{video_title}</a>\n\n<blockquote>{caption_lazy}</blockquote></b>'
  
                 #====================================== 
                 xlx = await progress_message2.edit_text("⚡ ᴘʀᴏᴄᴇssɪɴɢ ʏᴏᴜʀ ꜰɪʟᴇ ᴛᴏ ᴜᴘʟᴏᴀᴅ ᴏɴ ᴛᴇʟᴇɢʀᴀᴍ...")
