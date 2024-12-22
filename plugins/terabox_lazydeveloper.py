@@ -25,6 +25,8 @@ from plugins.utitles import Mdata01
 
 # aria2.set_global_options(options)
 from pyrogram import enums
+from hachoir.parser import createParser
+from hachoir.metadata import extractMetadata
 
 from urllib.parse import urlparse
 
@@ -128,9 +130,19 @@ async def download_from_terabox(client, message, url, platform):
                 response = requests.get(download_link, stream=True)
                 response.raise_for_status()
                 video_filename = os.path.join(destination_folder, video_title)  # Define the path to save the file
+                file_size = int(response.headers.get('content-length', 0))
+                current_size = 0
+                start_time = time.time()
+                # metadata = extractMetadata(createParser(video_filename))
+                # if metadata is not None:
+                #     if metadata.has("duration"):
+                #         duration = metadata.get("duration").seconds
+
                 with open(video_filename, "wb") as file:
                     for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
                         file.write(chunk)
+                        current_size += len(chunk)
+                        await progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 # return download_link, video_title
 
                 # Step 3: Upload the video to Telegram
