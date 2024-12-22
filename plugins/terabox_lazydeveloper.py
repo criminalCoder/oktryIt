@@ -70,6 +70,16 @@ async def new_progress_for_pyrogram(current, total, message, start_time):
         except Exception as e:
             print(f"Progress update error: {e}")
 
+import aiohttp
+async def download_file(url, dest_path):
+    chunk_size = 10 * 1024 * 1024  # 10 MB
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            with open(dest_path, 'wb') as file:
+                while chunk := await response.content.read(chunk_size):
+                    file.write(chunk)
+
+
 async def download_from_terabox(client, message, url, platform):
     await client.send_chat_action(message.chat.id, enums.ChatAction.TYPING)
     progress_message2 = await message.reply("<i>⚙ ᴘʀᴇᴘᴀʀɪɴɢ\nᴀɴᴀʟʏsɪɴɢ yᴏᴜʀ ᴜʀʟ...</i>")
@@ -159,13 +169,15 @@ async def download_from_terabox(client, message, url, platform):
                 #     if metadata.has("duration"):
                 #         duration = metadata.get("duration").seconds
 
-                with open(video_filename, "wb") as file:
-                    for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
-                        file.write(chunk)
-                        current_size += len(chunk)
-                        await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
-                # return download_link, video_title
+                # with open(video_filename, "wb") as file:
+                #     for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
+                #         file.write(chunk)
+                #         current_size += len(chunk)
+                # asyncio.run(download_file(download_link, video_filename))
 
+                        # await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
+                # return download_link, video_title
+                
                 # Step 3: Upload the video to Telegram
                 #======================================
                 bot_username = client.username if client.username else "👩‍💻Powered By LazyDeveloper"
