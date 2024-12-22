@@ -12,6 +12,7 @@ instaloader
 yt-dlp
 youtube_dl
 ffmpeg
+imageio[ffmpeg]
 requests
 loggers
 pyquery
