@@ -54,7 +54,7 @@ def extract_short_url(url):
 async def new_progress_for_pyrogram(current, total, message, start_time):
     now = time.time()
     diff = now - start_time
-    if diff >= 1:  # Update every second
+    if round(diff % 10.00) == 0 or current == total:
         percentage = (current / total) * 100
         speed = current / diff  # Bytes per second
         elapsed_time = time.strftime("%H:%M:%S", time.gmtime(diff))
@@ -100,7 +100,7 @@ async def download_from_terabox(client, message, url, platform):
     response = requests.get(f"https://terabox.hnn.workers.dev/api/get-info?shorturl={short_url}")
     response.raise_for_status()
     data = response.json()
-
+    print(data)
     if data.get("ok") and "list" in data and len(data["list"]) > 0:
         video_info = data["list"][0]
         video_title = video_info.get("filename", "Untitled Video")
@@ -171,14 +171,14 @@ async def download_from_terabox(client, message, url, platform):
                 #     if metadata.has("duration"):
                 #         duration = metadata.get("duration").seconds
 
-                # with open(video_filename, "wb") as file:
-                #     for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
-                #         file.write(chunk)
-                #         current_size += len(chunk)
+                with open(video_filename, "wb") as file:
+                    for chunk in response.iter_content(chunk_size=10 * 1024 * 1024):  # Save in chunks
+                        file.write(chunk)
+                        current_size += len(chunk)
+                        await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 
-                asyncio.run(download_file(download_link, video_filename))
+                # asyncio.run(download_file(download_link, video_filename))
 
-                        # await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 # return download_link, video_title
                 
                 # Step 3: Upload the video to Telegram
