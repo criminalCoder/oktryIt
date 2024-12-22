@@ -175,7 +175,8 @@ async def download_from_terabox(client, message, url, platform):
                 #     for chunk in response.iter_content(chunk_size=8192):  # Save in chunks
                 #         file.write(chunk)
                 #         current_size += len(chunk)
-                # asyncio.run(download_file(download_link, video_filename))
+                
+                asyncio.run(download_file(download_link, video_filename))
 
                         # await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 # return download_link, video_title
