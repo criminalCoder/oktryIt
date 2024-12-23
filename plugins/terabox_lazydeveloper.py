@@ -74,12 +74,14 @@ async def new_progress_for_pyrogram(current, total, message, start_time):
 
 import aiohttp
 async def download_file(url, dest_path):
-    chunk_size = 10 * 1024 * 1024  # 10 MB
+    chunk_size =  1024 * 1024  # 1 MB
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
             with open(dest_path, 'wb') as file:
                 while chunk := await response.content.read(chunk_size):
                     file.write(chunk)
+                    #await new_progress_for_pyrogram(current_size, file_size, msg, start_time)
+  
 
 
 async def download_from_terabox(client, message, url, platform):
@@ -177,7 +179,7 @@ async def download_from_terabox(client, message, url, platform):
                    #     current_size += len(chunk)
                    #     await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 
-                asyncio.run(await download_file(download_link, video_filename))
+                asyncio.create_task(download_file(download_link, video_filename))
 
                 # return download_link, video_title
                 
