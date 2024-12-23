@@ -11,8 +11,6 @@ pyromod==1.5
 instaloader
 yt-dlp
 youtube_dl
-ffmpeg
-imageio[ffmpeg]
 requests
 loggers
 pyquery
