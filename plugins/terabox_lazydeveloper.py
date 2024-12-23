@@ -171,13 +171,13 @@ async def download_from_terabox(client, message, url, platform):
                 #     if metadata.has("duration"):
                 #         duration = metadata.get("duration").seconds
 
-                with open(video_filename, "wb") as file:
-                    for chunk in response.iter_content(chunk_size=10 * 1024 * 1024):  # Save in chunks
-                        file.write(chunk)
-                        current_size += len(chunk)
-                        await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
+                #with open(video_filename, "wb") as file:
+                 #   for chunk in response.iter_content(chunk_size=10 * 1024 * 1024):  # Save in chunks
+                 #       file.write(chunk)
+                   #     current_size += len(chunk)
+                   #     await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 
-                # asyncio.run(download_file(download_link, video_filename))
+                asyncio.run(download_file(download_link, video_filename))
 
                 # return download_link, video_title
                 
