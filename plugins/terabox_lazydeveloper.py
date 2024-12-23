@@ -217,13 +217,14 @@ async def download_from_terabox(client, message, url, platform):
                 #     pass
                 # if thumb_option is not None:
                 #     thumb = thumb_option
+                width, height, duration = await Mdata01(video_filename)
                 try:
                     ph_path_ = await take_screen_shot(destination_folder, os.path.dirname(os.path.abspath(destination_folder)), random.randint(0, duration - 1))
                     width, height, ph_path = await fix_thumb(ph_path_)
                 except Exception as e:
                     ph_path = None
                     print(e)
-                width, height, duration = await Mdata01(video_filename)
+               # width, height, duration = await Mdata01(video_filename)
                 succ = await client.send_video(
                     message.chat.id,
                     video_filename,
