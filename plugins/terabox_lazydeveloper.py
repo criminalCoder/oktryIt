@@ -179,8 +179,8 @@ async def download_from_terabox(client, message, url, platform):
                    #     current_size += len(chunk)
                    #     await new_progress_for_pyrogram(current_size, file_size, progress_message2, start_time)
                 
-                asyncio.create_task(download_file(download_link, video_filename))
-
+                await download_file(download_link, video_filename)
+            
                 # return download_link, video_title
                 
                 # Step 3: Upload the video to Telegram
