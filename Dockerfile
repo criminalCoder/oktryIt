@@ -1,7 +1,21 @@
-FROM python:3.10
+# Base image with Python 3.10
+FROM python:3.10-slim
+
+# Set working directory
 WORKDIR /app
+
+# Copy application files
 COPY . /app/
-RUN apt update && apt upgrade -y
-RUN pip install -r requirements.txt
-RUN apt install git python-pip ffmpeg -y
-CMD ["python", "bot.py"]
+
+# Install ffmpeg and other dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    git \
+    python3-pip \
+    && apt-get clean
+
+# Install Python dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Command to run the bot
+CMD ["python3", "bot.py"]
